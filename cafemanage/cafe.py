@@ -263,14 +263,14 @@ def menu_management_page():
                             })
                             save_json(MENU_FILE, menu_data)
                             st.success("Item updated.")
-                            st.experimental_rerun()
+                            st.rerun()
             with col2:
                 if st.form_submit_button("Delete Item"):
                     t = item["_type"]
                     menu_data[t] = [itm for itm in menu_data[t] if itm["id"] != item["id"]]
                     save_json(MENU_FILE, menu_data)
                     st.success("Item deleted.")
-                    st.experimental_rerun()
+                    st.rerun()
 
 def table_management_page():
     st.header("🪑 Table Management")
@@ -348,7 +348,7 @@ def order_management_page():
                             }
                             st.session_state.cart.append(cart_item)
                             st.success(f"Added {qty}x {item['name']} to cart!")
-                            st.experimental_rerun()
+                            st.rerun()
 
         st.subheader("Shopping Cart")
         if st.session_state.cart:
@@ -446,7 +446,7 @@ def order_management_page():
                     # === END PDF & EMAIL BLOCK ===
 
                     st.session_state.cart = []
-                    st.experimental_rerun()
+                    st.rerun()
         else:
             st.info("Add items to the cart from above menu.")
 
@@ -650,4 +650,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
