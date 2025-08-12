@@ -479,7 +479,7 @@ def order_management_page():
                 st.write(f"Tax: ₹{order.get('tax', 0):.2f}")
                 st.write(f"Service Charge: ₹{order.get('service_charge', 0):.2f}")
                 st.write(f"Total: ₹{order['total']:.2f}")
-                payment_status = order.get('payment_status', 'Unpaid')
+                payment_status = order.get('payment_status', 'cash')
                 st.write(f"Payment Status: {payment_status}")
 
                 new_status = st.selectbox("Update Status", ["Pending", "Preparing", "Ready", "Completed", "Cancelled"], index=["Pending", "Preparing", "Ready", "Completed", "Cancelled"].index(order.get('status', 'Pending')),
@@ -650,5 +650,6 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
 
