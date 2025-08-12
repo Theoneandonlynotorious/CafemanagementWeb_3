@@ -136,7 +136,7 @@ def login_page():
             st.session_state['logged_in'] = True
             st.session_state['user'] = user
             st.success(f"Welcome, {user['username']}!")
-            st.rerun()
+            st.experimental_rerun()
         else:
             st.error("Invalid username or password")
 
@@ -221,7 +221,7 @@ def menu_management_page():
                     menu_data[item_type].append(new_item)
                     save_json(MENU_FILE, menu_data)
                     st.success(f"Added {item_name} to menu!")
-                    st.rerun()
+                    st.experimental_rerun()
                 else:
                     st.error("Please fill all fields.")
 
@@ -263,14 +263,14 @@ def menu_management_page():
                             })
                             save_json(MENU_FILE, menu_data)
                             st.success("Item updated.")
-                            st.rerun()
+                            st.experimental_rerun()
             with col2:
                 if st.form_submit_button("Delete Item"):
                     t = item["_type"]
                     menu_data[t] = [itm for itm in menu_data[t] if itm["id"] != item["id"]]
                     save_json(MENU_FILE, menu_data)
                     st.success("Item deleted.")
-                    st.rerun()
+                    st.experimental_rerun()
 
 def table_management_page():
     st.header("🪑 Table Management")
@@ -348,7 +348,7 @@ def order_management_page():
                             }
                             st.session_state.cart.append(cart_item)
                             st.success(f"Added {qty}x {item['name']} to cart!")
-                            st.rerun()
+                            st.experimental_rerun()
 
         st.subheader("Shopping Cart")
         if st.session_state.cart:
@@ -446,7 +446,7 @@ def order_management_page():
                     # === END PDF & EMAIL BLOCK ===
 
                     st.session_state.cart = []
-                    st.rerun()
+                    st.experimental_rerun()
         else:
             st.info("Add items to the cart from above menu.")
 
@@ -490,7 +490,7 @@ def order_management_page():
                             o['status'] = new_status
                             save_json(ORDERS_FILE, orders_data)
                             st.success(f"Order {order['id']} status updated to {new_status}")
-                            st.rerun()
+                            st.experimental_rerun()
                     
 def sales_analytics_page():
     st.header("📊 Sales Analytics")
@@ -569,7 +569,7 @@ def settings_page():
             }
             save_json(SETTINGS_FILE, new_settings)
             st.success("Settings saved")
-            st.rerun()
+            st.experimental_rerun()
 
     st.subheader("Data Management")
     col1, col2, col3 = st.columns(3)
@@ -591,7 +591,7 @@ def settings_page():
                     save_json(USERS_FILE, [{"username": "admin", "password": "admin123", "role": "admin"},
                                            {"username": "staff", "password": "staff123", "role": "staff"}])
                     st.success("All data cleared")
-                    st.rerun()
+                    st.experimental_rerun()
 
 # --- Main driver function ---
 def main():
@@ -619,7 +619,7 @@ def main():
         st.session_state['logged_in'] = False
         st.session_state['user'] = None
         st.session_state['cart'] = []
-        st.rerun()
+        st.experimental_rerun()
 
     elif choice == "Dashboard":
         dashboard_page()
@@ -650,8 +650,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-
-
-
-
