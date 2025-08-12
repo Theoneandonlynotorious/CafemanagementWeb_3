@@ -263,7 +263,7 @@ def menu_management_page():
                             })
                             save_json(MENU_FILE, menu_data)
                             st.success("Item updated.")
-                            st.()
+                            st.rerun()
             with col2:
                 if st.form_submit_button("Delete Item"):
                     t = item["_type"]
@@ -650,6 +650,7 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
 
 
