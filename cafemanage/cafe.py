@@ -12,6 +12,36 @@ SETTINGS_FILE = "settings.json"
 TABLES_FILE = "tables_data.json"  # New file for tables
 USERS_FILE = "users_data.json"    # New file for users (auth)
 
+# --- Helper to release table when order is no longer Reserved/Completed ---
+def release_table_on_status_change(order_obj):
+    """
+    If the order's table is no longer tied to an active (Reserved/Preparing/Ready) order,
+    mark that table as 'Available'.
+    """
+    table_no = str(order_obj.get("table_number", "")).strip()
+    if not table_no:
+        return
+
+    # load current orders and tables
+    orders = load_json(ORDERS_FILE) or []
+    tables = load_json(TABLES_FILE) or []
+
+    # any other order still reserving this table?
+    still_reserved = any(
+        str(o.get("table_number")).strip() == table_no and
+        o.get("status") in {"Reserved", "Pending", "Preparing", "Ready"}
+        for o in orders
+    )
+
+    # update table
+    for t in tables:
+        if t["table_number"] == table_no:
+            new_status = "Available" if not still_reserved else t["status"]
+            if t["status"] != new_status:
+                t["status"] = new_status
+                save_json(TABLES_FILE, tables)
+            break
+
 # --- Initialize data files with defaults if missing ---
 
 def initialize_data_files():
@@ -489,6 +519,7 @@ def order_management_page():
                         if o['id'] == order['id']:
                             o['status'] = new_status
                             save_json(ORDERS_FILE, orders_data)
+                            release_table_on_status_change(o)   # <-- single added line
                             st.success(f"Order {order['id']} status updated to {new_status}")
                             st.rerun()
                     
@@ -619,7 +650,7 @@ def main():
         st.session_state['logged_in'] = False
         st.session_state['user'] = None
         st.session_state['cart'] = []
-        st.experimental_rerun()
+        st.rerun()
 
     elif choice == "Dashboard":
         dashboard_page()
@@ -650,7 +681,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-
-
-
