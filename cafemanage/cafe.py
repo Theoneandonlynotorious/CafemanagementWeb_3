@@ -221,7 +221,7 @@ def menu_management_page():
                     menu_data[item_type].append(new_item)
                     save_json(MENU_FILE, menu_data)
                     st.success(f"Added {item_name} to menu!")
-                    st.experimental_rerun()
+                    st.rerun()
                 else:
                     st.error("Please fill all fields.")
 
@@ -263,14 +263,14 @@ def menu_management_page():
                             })
                             save_json(MENU_FILE, menu_data)
                             st.success("Item updated.")
-                            st.experimental_rerun()
+                            st.()
             with col2:
                 if st.form_submit_button("Delete Item"):
                     t = item["_type"]
                     menu_data[t] = [itm for itm in menu_data[t] if itm["id"] != item["id"]]
                     save_json(MENU_FILE, menu_data)
                     st.success("Item deleted.")
-                    st.experimental_rerun()
+                    st.rerun()
 
 def table_management_page():
     st.header("🪑 Table Management")
@@ -348,7 +348,7 @@ def order_management_page():
                             }
                             st.session_state.cart.append(cart_item)
                             st.success(f"Added {qty}x {item['name']} to cart!")
-                            st.experimental_rerun()
+                            st.rerun()
 
         st.subheader("Shopping Cart")
         if st.session_state.cart:
@@ -366,7 +366,7 @@ def order_management_page():
                 st.session_state.cart.pop(idx)
             total = sum(item['subtotal'] for item in st.session_state.cart)
 
-            discount = st.number_input("Discount ($)", min_value=0.0, max_value=total, value=st.session_state.discount, step=0.10)
+            discount = st.number_input("Discount (₹)", min_value=0.0, max_value=total, value=st.session_state.discount, step=0.10)
             st.session_state.discount = discount
 
             tax_rate = settings.get('tax_rate', 0.10)
@@ -383,7 +383,7 @@ def order_management_page():
             st.write(f"Service Charge ({service_charge*100:.0f}%): +₹{service_amt:.2f}")
             st.write(f"**Total: ₹{final_total:.2f}**")
 
-            payment_status = st.selectbox("Payment Status", ["Unpaid", "Paid", "Partial"])
+            payment_status = st.selectbox("Payment Status", ["online", "Cash", "Partial"])
 
             if st.button("Place Order"):
                 if not customer_name:
@@ -446,7 +446,7 @@ def order_management_page():
                     # === END PDF & EMAIL BLOCK ===
 
                     st.session_state.cart = []
-                    st.experimental_rerun()
+                    st.rerun()
         else:
             st.info("Add items to the cart from above menu.")
 
@@ -490,7 +490,7 @@ def order_management_page():
                             o['status'] = new_status
                             save_json(ORDERS_FILE, orders_data)
                             st.success(f"Order {order['id']} status updated to {new_status}")
-                            st.experimental_rerun()
+                            st.rerun()
                     
 def sales_analytics_page():
     st.header("📊 Sales Analytics")
@@ -569,7 +569,7 @@ def settings_page():
             }
             save_json(SETTINGS_FILE, new_settings)
             st.success("Settings saved")
-            st.experimental_rerun()
+            st.rerun()
 
     st.subheader("Data Management")
     col1, col2, col3 = st.columns(3)
@@ -591,7 +591,7 @@ def settings_page():
                     save_json(USERS_FILE, [{"username": "admin", "password": "admin123", "role": "admin"},
                                            {"username": "staff", "password": "staff123", "role": "staff"}])
                     st.success("All data cleared")
-                    st.experimental_rerun()
+                    st.rerun()
 
 # --- Main driver function ---
 def main():
@@ -650,4 +650,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
