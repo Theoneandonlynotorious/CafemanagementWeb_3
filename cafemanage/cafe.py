@@ -490,7 +490,7 @@ def order_management_page():
                             o['status'] = new_status
                             save_json(ORDERS_FILE, orders_data)
                             st.success(f"Order {order['id']} status updated to {new_status}")
-                            st.experimental_rerun()
+                            st.rerun()
                     
 def sales_analytics_page():
     st.header("📊 Sales Analytics")
@@ -650,5 +650,6 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
 
