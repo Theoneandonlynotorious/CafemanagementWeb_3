@@ -569,7 +569,7 @@ def settings_page():
             }
             save_json(SETTINGS_FILE, new_settings)
             st.success("Settings saved")
-            st.experimental_rerun()
+            st.rerun()
 
     st.subheader("Data Management")
     col1, col2, col3 = st.columns(3)
@@ -591,7 +591,7 @@ def settings_page():
                     save_json(USERS_FILE, [{"username": "admin", "password": "admin123", "role": "admin"},
                                            {"username": "staff", "password": "staff123", "role": "staff"}])
                     st.success("All data cleared")
-                    st.experimental_rerun()
+                    st.rerun()
 
 # --- Main driver function ---
 def main():
@@ -619,7 +619,7 @@ def main():
         st.session_state['logged_in'] = False
         st.session_state['user'] = None
         st.session_state['cart'] = []
-        st.experimental_rerun()
+        st.rerun()
 
     elif choice == "Dashboard":
         dashboard_page()
@@ -650,3 +650,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
