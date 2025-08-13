@@ -4,7 +4,6 @@ import os
 from datetime import datetime, date
 import qrcode
 import io
-from bill_mail import build_pdf, send_email 
 
 # --- File paths ---
 MENU_FILE = "menu_data.json"
@@ -220,7 +219,7 @@ def menu_management_page():
                     menu_data[item_type].append(new_item)
                     save_json(MENU_FILE, menu_data)
                     st.success(f"Added {item_name} to menu!")
-                    st.rerun()
+                    #st.experimental_rerun()
                 else:
                     st.error("Please fill all fields.")
 
@@ -262,7 +261,7 @@ def menu_management_page():
                             })
                             save_json(MENU_FILE, menu_data)
                             st.success("Item updated.")
-                            st.rerun()
+                            st.experimental_rerun()
             with col2:
                 if st.form_submit_button("Delete Item"):
                     t = item["_type"]
@@ -338,16 +337,29 @@ def order_management_page():
         col_left, col_mid, col_right = st.columns(3)
         with col_left:
             customer_name = st.text_input("Customer Name")
-        with col_mid:
-            table_number = st.text_input("Table Number (Optional)")
         with col_right:
             customer_email = st.text_input("Customer e-mail (for bill)")
+
+        # ---------- LIVE TABLE CHECK ----------
+        busy = {o.get("table_number") for o in orders_data
+                if o.get("table_number") and o.get("status") in {"Pending", "Preparing", "Ready"}}
+        free = [str(i) for i in range(1, 11) if str(i) not in busy]
+
+        if free:
+            table_number = col_mid.selectbox("Table Number", ["No table"] + free)
+            if table_number != "No table" and table_number in busy:
+                st.error(f"⚠ Table {table_number} is currently busy.")
+                table_number = "No table"
+        else:
+            st.warning("⚠ All tables are occupied.")
+            table_number = "No table"
+        # --------------------------------------
 
         st.write("### Menu Items")
         all_items = [it for cat in menu_data.values() for it in cat if it.get("available", True)]
 
         for cat in sorted({it["category"] for it in all_items}):
-            st.write(f"**{cat}**")
+            st.write(f"{cat}")
             for item in [i for i in all_items if i["category"] == cat]:
                 c1, c2, c3, c4 = st.columns([3, 1, 1, 1])
                 c1.write(f"{item['name']} — {item.get('description', '')}")
@@ -378,7 +390,7 @@ def order_management_page():
             st.write(f"Subtotal: ₹{total:.2f}")
             st.write(f"Tax ({tax_rate*100:.0f}%): +₹{tax_amt:.2f}")
             st.write(f"Service Charge ({service_charge*100:.0f}%): +₹{svc_amt:.2f}")
-            st.write(f"**Total: ₹{final_total:.2f}**")
+            st.write(f"*Total: ₹{final_total:.2f}*")
 
             payment_status = st.selectbox("Payment Status", ["Unpaid", "Paid", "Partial"])
 
@@ -402,10 +414,9 @@ def order_management_page():
                     new_order = {
                         "id": f"ORD{len(orders_data)+1:05d}",
                         "customer_name": customer_name,
-                        "table_number": table_number,
+                        "table_number": table_number if table_number != "No table" else "",
                         "items": st.session_state.cart.copy(),
                         "subtotal": total,
-                        "discount": 0.0,  # Ensure key exists
                         "tax": tax_amt,
                         "service_charge": svc_amt,
                         "total": final_total,
@@ -418,38 +429,14 @@ def order_management_page():
                     orders_data.append(new_order)
                     save_json(ORDERS_FILE, orders_data)
 
-                    # ✅ Generate PDF bill
-                    try:
-                        pdf_bytes = build_pdf(new_order)
-                    except Exception as e:
-                        st.error(f"Error generating PDF: {e}")
-                        pdf_bytes = None
-
-                    # ✅ Send email if email provided
-                    if customer_email and pdf_bytes:
-                        try:
-                            send_email(customer_email, new_order, pdf_bytes)
-                            st.success(f"Bill sent to {customer_email}")
-                        except Exception as e:
-                            st.error(f"Email send failed: {e}")
-
-                    # ✅ Show download button
-                    if pdf_bytes:
-                        st.download_button(
-                            "📄 Download Bill PDF",
-                            pdf_bytes,
-                            file_name=f"{new_order['id']}.pdf",
-                            mime="application/pdf"
-                        )
-
                     st.balloons()
                     st.success(f"Order placed! ID: {new_order['id']}")
                     st.session_state.cart = []
+                    st.rerun()
         else:
             st.info("Add items to the cart from above menu.")
 
     with tab2:
-        # --- No changes in Order History tab ---
         st.subheader("Order History")
         orders = load_json(ORDERS_FILE) or []
         if not orders:
@@ -474,7 +461,7 @@ def order_management_page():
                 st.write(f"Subtotal: ₹{order['subtotal']:.2f}")
                 st.write(f"Tax: ₹{order.get('tax', 0):.2f}")
                 st.write(f"Service Charge: ₹{order.get('service_charge', 0):.2f}")
-                st.write(f"**Total: ₹{order['total']:.2f}**")
+                st.write(f"*Total: ₹{order['total']:.2f}*")
                 st.write(f"Payment: {order.get('payment_status', 'Unpaid')}")
 
                 new_status = st.selectbox("Update Status", ["Pending", "Preparing", "Ready", "Completed", "Cancelled"],
@@ -487,7 +474,6 @@ def order_management_page():
                             save_json(ORDERS_FILE, orders)
                             st.success("Status updated")
                             st.rerun()
-
                     
 def sales_analytics_page():
     st.header("📊 Sales Analytics")
@@ -620,7 +606,7 @@ def main():
         st.session_state['logged_in'] = False
         st.session_state['user'] = None
         st.session_state['cart'] = []
-        st.rerun()
+        st.experimental_rerun()
     elif choice == "Dashboard":
         dashboard_page()
     elif choice == "Menu Management":
@@ -643,8 +629,7 @@ def main():
         else:
             st.warning("Only admin can access settings.")
 
-if __name__ == "__main__":
+if _name_ == "_main_":
     if 'cart' not in st.session_state:
         st.session_state['cart'] = []
     main()
-
