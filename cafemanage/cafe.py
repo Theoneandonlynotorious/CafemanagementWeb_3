@@ -436,7 +436,7 @@ def order_management_page():
                 pdf_bytes = None
 
             # ✅ Send email if email provided
-         if customer_email and pdf_bytes:
+          if customer_email and pdf_bytes:
                 try:
                     send_email(customer_email, new_order, pdf_bytes)
                     st.success(f"Bill sent to {customer_email}")
@@ -665,6 +665,7 @@ if __name__ == "__main__":
     if 'cart' not in st.session_state:
         st.session_state['cart'] = []
     main()
+
 
 
 
