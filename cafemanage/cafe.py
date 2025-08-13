@@ -629,7 +629,8 @@ def main():
         else:
             st.warning("Only admin can access settings.")
 
-if _name_ == "_main_":
+if __name__ == "_main_":
     if 'cart' not in st.session_state:
         st.session_state['cart'] = []
     main()
+
