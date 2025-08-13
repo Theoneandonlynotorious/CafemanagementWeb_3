@@ -429,45 +429,34 @@ def order_management_page():
                     orders_data.append(new_order)
                     save_json(ORDERS_FILE, orders_data)
             # ✅ Generate PDF bill
-            try:
-                pdf_bytes = build_pdf(new_order)
-            except Exception as e:
-                st.error(f"Error generating PDF: {e}")
-                pdf_bytes = None
-            
-            # ✅ Send email if email provided
-            if customer_email and pdf_bytes:
-                try:
-                    send_email(customer_email, new_order, pdf_bytes)
-                    st.success(f"Bill sent to {customer_email}")
-                except Exception as e:
-                    st.error(f"Email send failed: {e}")
-            
-            # ✅ Show download button
-            if pdf_bytes:
-                st.download_button(
-                    "📄 Download Bill PDF",
-                    pdf_bytes,
-                    file_name=f"{new_order['id']}.pdf",
-                    mime="application/pdf"
-                )
-            
-            # 🔹 Remove balloons & show message instead
-            st.info("✅ Order successfully placed!")
-            
-            # 🔹 Clear all inputs immediately
-            st.session_state.customer_name = ""
-            st.session_state.customer_email = ""
-            st.session_state.table_number = "No table"
-            st.session_state.cart = []
-            
-            # 🔹 Wait 5 seconds before refresh
-            import time
-            time.sleep(3)
-            st.rerun()
+                    try:
+                        pdf_bytes = build_pdf(new_order)
+                    except Exception as e:
+                        st.error(f"Error generating PDF: {e}")
+                        pdf_bytes = None
 
-            
-                  
+                    # ✅ Send email if email provided
+                    if customer_email and pdf_bytes:
+                        try:
+                            send_email(customer_email, new_order, pdf_bytes)
+                            st.success(f"Bill sent to {customer_email}")
+                        except Exception as e:
+                            st.error(f"Email send failed: {e}")
+
+                    # ✅ Show download button
+                    if pdf_bytes:
+                        st.download_button(
+                            "📄 Download Bill PDF",
+                            pdf_bytes,
+                            file_name=f"{new_order['id']}.pdf",
+                            mime="application/pdf"
+                        )
+
+                    st.success(f"Order placed! ID: {new_order['id']}")
+                    st.session_state.cart = []
+        else:
+            st.info("Add items to the cart from above menu.")
+
     with tab2:
         st.subheader("Order History")
         orders = load_json(ORDERS_FILE) or []
@@ -665,6 +654,7 @@ if __name__ == "__main__":
     if 'cart' not in st.session_state:
         st.session_state['cart'] = []
     main()
+
 
 
 
