@@ -261,7 +261,7 @@ def menu_management_page():
                             })
                             save_json(MENU_FILE, menu_data)
                             st.success("Item updated.")
-                            st.experimental_rerun()
+                            st.rerun()
             with col2:
                 if st.form_submit_button("Delete Item"):
                     t = item["_type"]
@@ -627,7 +627,7 @@ def main():
         st.session_state['logged_in'] = False
         st.session_state['user'] = None
         st.session_state['cart'] = []
-        st.experimental_rerun()
+        st.rerun()
     elif choice == "Dashboard":
         dashboard_page()
     elif choice == "Menu Management":
@@ -654,12 +654,3 @@ if __name__ == "__main__":
     if 'cart' not in st.session_state:
         st.session_state['cart'] = []
     main()
-
-
-
-
-
-
-
-
-
