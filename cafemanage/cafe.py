@@ -1,4 +1,3 @@
-from streamlit_autorefresh import st_autorefresh
 import streamlit as st
 import json
 import os
@@ -657,4 +656,5 @@ if __name__ == "__main__":
     if 'cart' not in st.session_state:
         st.session_state['cart'] = []
     main()
+
 
