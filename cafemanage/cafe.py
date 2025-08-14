@@ -454,6 +454,7 @@ def order_management_page():
 
                     st.success(f"Order placed! ID: {new_order['id']}")
                     st.session_state.cart = []
+                    st.rerun()
         else:
             st.info("Add items to the cart from above menu.")
 
@@ -654,6 +655,7 @@ if __name__ == "__main__":
     if 'cart' not in st.session_state:
         st.session_state['cart'] = []
     main()
+
 
 
 
