@@ -493,22 +493,19 @@ with tab1:
     else:
         st.info("Add items to the cart from above menu.")
     with tab2:
-        st.subheader("Order History")
-        orders = load_json(ORDERS_FILE) or []
-        if not orders:
-            st.info("No orders found")
-            return
-
+    st.subheader("Order History")
+    orders = load_json(ORDERS_FILE) or []
+    if not orders:
+        st.info("No orders found")
+    else:
         status_filter = st.selectbox("Filter by Status", ["All", "Pending", "Preparing", "Ready", "Completed", "Cancelled"])
         date_filter = st.date_input("Filter by Date", None)
-
         filt = orders
         if status_filter != "All":
             filt = [o for o in filt if o.get("status") == status_filter]
         if date_filter:
             filt = [o for o in filt if o.get("date") == str(date_filter)]
         filt = sorted(filt, key=lambda x: x["timestamp"], reverse=True)
-
         for order in filt:
             with st.expander(f"{order['id']} by {order['customer_name']} — ₹{order['total']:.2f} ({order.get('status')})"):
                 st.write(f"Date: {order['date']} {order['time']} | Table: {order.get('table_number', '-')}")
@@ -519,7 +516,6 @@ with tab1:
                 st.write(f"Service Charge: ₹{order.get('service_charge', 0):.2f}")
                 st.write(f"*Total: ₹{order['total']:.2f}*")
                 st.write(f"Payment: {order.get('payment_status', 'Unpaid')}")
-
                 new_status = st.selectbox("Update Status", ["Pending", "Preparing", "Ready", "Completed", "Cancelled"],
                                           index=["Pending", "Preparing", "Ready", "Completed", "Cancelled"].index(order.get("status", "Pending")),
                                           key=f"status_{order['id']}")
@@ -530,6 +526,7 @@ with tab1:
                             save_json(ORDERS_FILE, orders)
                             st.success("Status updated")
                             st.rerun()
+
                     
 def sales_analytics_page():
     st.header("📊 Sales Analytics")
@@ -689,6 +686,7 @@ if __name__ == "__main__":
     if 'cart' not in st.session_state:
         st.session_state['cart'] = []
     main()
+
 
 
 
