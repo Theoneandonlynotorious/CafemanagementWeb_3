@@ -402,17 +402,30 @@ with tab1:
                 st.error("Cart is empty")
             else:
                 # inventory update
+                inventory_error = False
                 for ci in st.session_state.cart:
                     for cat in menu_data:
                         for it in menu_data[cat]:
                             if it["id"] == ci["id"]:
                                 if ci["quantity"] > it.get("inventory", 0):
                                     st.error(f"Not enough inventory for {it['name']}")
-                                    return
-                                it["inventory"] -= ci["quantity"]
-                save_json(MENU_FILE, menu_data)
+                                    inventory_error = True
+                                    break
+                        if inventory_error:
+                            break
+                    if inventory_error:
+                        break
+                
+                if not inventory_error:
+                    # Update inventory
+                    for ci in st.session_state.cart:
+                        for cat in menu_data:
+                            for it in menu_data[cat]:
+                                if it["id"] == ci["id"]:
+                                    it["inventory"] -= ci["quantity"]
+                    save_json(MENU_FILE, menu_data)
 
-                new_order = {
+                    new_order = {
                     "id": f"ORD{len(orders_data)+1:05d}",
                     "customer_name": customer_name,
                     "table_number": table_number if table_number != "No table" else "",
@@ -676,6 +689,7 @@ if __name__ == "__main__":
     if 'cart' not in st.session_state:
         st.session_state['cart'] = []
     main()
+
 
 
 
