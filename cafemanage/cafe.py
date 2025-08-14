@@ -407,7 +407,7 @@ if st.session_state.cart:
                         if it["id"] == ci["id"]:
                             if ci["quantity"] > it.get("inventory", 0):
                                 st.error(f"Not enough inventory for {it['name']}")
-                                return
+                                st.stop()           # ← fixed
                             it["inventory"] -= ci["quantity"]
             save_json(MENU_FILE, menu_data)
 
@@ -429,14 +429,14 @@ if st.session_state.cart:
             orders_data.append(new_order)
             save_json(ORDERS_FILE, new_order)
 
-            # Generate PDF bill
+            # ✅ Generate PDF bill
             try:
                 pdf_bytes = build_pdf(new_order)
             except Exception as e:
                 st.error(f"Error generating PDF: {e}")
                 pdf_bytes = None
 
-            # Send email if email provided
+            # ✅ Send email if email provided
             if customer_email and pdf_bytes:
                 try:
                     send_email(customer_email, new_order, pdf_bytes)
@@ -444,7 +444,7 @@ if st.session_state.cart:
                 except Exception as e:
                     st.error(f"Email send failed: {e}")
 
-            # Show download button
+            # ✅ Show download button
             if pdf_bytes:
                 st.download_button(
                     "📄 Download Bill PDF",
@@ -456,7 +456,7 @@ if st.session_state.cart:
             st.success(f"Order placed! ID: {new_order['id']}")
             st.session_state.cart = []
 
-            # --- NEW: reset name & email, then auto-refresh after 4 s ---
+            # --- auto-reset & refresh after 4 s ---
             st.session_state.customer_name = ""
             st.session_state.customer_email = ""
             time.sleep(4)
@@ -661,5 +661,6 @@ if __name__ == "__main__":
     if 'cart' not in st.session_state:
         st.session_state['cart'] = []
     main()
+
 
 
