@@ -176,7 +176,6 @@ def menu_management_page():
                     st.write(f"{item['name']}** — ₹{item['price']:.2f} — Inv: {item.get('inventory', 'N/A')} — {'✅' if item['available'] else '❌'}")
                     if item.get('description'):
                         st.write(f"{item['description']}")
-
     with tab2:
         st.subheader("Add New Item")
         with st.form("add_item_form"):
@@ -193,14 +192,12 @@ def menu_management_page():
                 if item_name and item_price and item_category:
                     prefix = "BEV" if item_type == "beverages" else "FOOD"
                     existing = menu_data.get(item_type, [])
-                    # Unique ID generation improved to check existing max
                     max_id = 0
                     for itm in existing:
                         try:
                             num = int(itm["id"].replace(prefix, ""))
-                            if num > max_id:
-                                max_id = num
-                        except:
+                            max_id = max(max_id, num)
+                        except ValueError:
                             continue
                     new_id = f"{prefix}{max_id + 1:03d}"
 
@@ -214,16 +211,16 @@ def menu_management_page():
                         "inventory": int(item_inventory)
                     }
 
-                    if item_type not in menu_data:
-                        menu_data[item_type] = []
-                    menu_data[item_type].append(new_item)
+                    # 1) Insert new item *after* the last default item of its category
+                    default_count = len([i for i in existing if i.get("_type") == item_type])
+                    menu_data[item_type].insert(default_count, new_item)
+
+                    # 2) Persist the change
                     save_json(MENU_FILE, menu_data)
-                    menu_data.setdefault(item_category, []).append(new_item)
-                    st.success(f"Added {item_name} to menu!")
-                    #st.experimental_rerun()
+                    st.success(f"Added {item_name} to {item_category}!")
+                    st.rerun()
                 else:
                     st.error("Please fill all fields.")
-
     with tab3:
         st.subheader("Edit Menu Items")
         all_items = []
@@ -655,4 +652,5 @@ if __name__ == "__main__":
     if 'cart' not in st.session_state:
         st.session_state['cart'] = []
     main()
+
 
