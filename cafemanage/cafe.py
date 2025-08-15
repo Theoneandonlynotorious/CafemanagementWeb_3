@@ -429,14 +429,7 @@ def order_management_page():
                     }
                     orders_data.append(new_order)
                     save_json(ORDERS_FILE, orders_data)
-                      
-                    import time
-                    time.sleep(8)
-                    st.session_state.pop("customer_name", None)
-                    st.session_state.pop("customer_email", None)
-                    st.session_state.pop("table_number", None)
-                    st.session_state.cart = []
-                    st.rerun()
+                   
                  
             # ✅ Generate PDF bill
                     try:
@@ -463,12 +456,19 @@ def order_management_page():
                         )
 
                   
-                    #st.session_state["customer_name"] = ""
-                    #st.session_state["customer_email"] = ""
-                    #st.session_state["table_number"] = "No table"
-                    #st.success(f"Order placed! ID: {new_order['id']}")
-                    #st.session_state.cart = []
-                    
+                    st.session_state["customer_name"] = ""
+                    st.session_state["customer_email"] = ""
+                    st.session_state["table_number"] = "No table"
+                    st.success(f"Order placed! ID: {new_order['id']}")
+                    st.session_state.cart = []
+                       
+                    import time
+                    time.sleep(8)
+                    st.session_state.pop("customer_name", None)
+                    st.session_state.pop("customer_email", None)
+                    st.session_state.pop("table_number", None)
+                    st.session_state.cart = []
+                    st.rerun()
 
                    
         else:
@@ -671,6 +671,7 @@ if __name__ == "__main__":
     if 'cart' not in st.session_state:
         st.session_state['cart'] = []
     main()
+
 
 
 
