@@ -429,18 +429,7 @@ def order_management_page():
                     }
                     orders_data.append(new_order)
                     save_json(ORDERS_FILE, orders_data)
-                                        # ── clear customer inputs and cart -------------------------------
-                    st.session_state.pop("customer_name", None)
-                    st.session_state.pop("customer_email", None)
-                    st.session_state.pop("table_number", None)
-                    st.session_state.cart = []
-
-                    # ── 4-second auto-refresh via rerun ----------------------------
-                    st.success(f"Order placed! ID: {new_order['id']}")
-                    st.balloons()
-                    import time
-                    time.sleep(4)
-                    st.rerun()
+                 
             # ✅ Generate PDF bill
                     try:
                         pdf_bytes = build_pdf(new_order)
@@ -467,6 +456,10 @@ def order_management_page():
 
                     st.success(f"Order placed! ID: {new_order['id']}")
                     st.session_state.cart = []
+                     
+                    import time
+                    time.sleep(4)
+                    st.rerun()
         else:
             st.info("Add items to the cart from above menu.")
 
@@ -667,6 +660,7 @@ if __name__ == "__main__":
     if 'cart' not in st.session_state:
         st.session_state['cart'] = []
     main()
+
 
 
 
