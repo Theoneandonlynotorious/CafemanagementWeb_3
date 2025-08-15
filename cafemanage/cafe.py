@@ -213,8 +213,9 @@ def menu_management_page():
 
                     # 1) Insert new item *after* the last default item of its category
                     default_count = len([i for i in existing if i.get("_type") == item_type])
-                    menu_data[item_type].insert(default_count, new_item)
-
+                   first_custom = next((i for i, itm in enumerate(menu_data[item_type])
+                     if not itm["id"].startswith(prefix)), len(menu_data[item_type]))
+menu_data[item_type].insert(first_custom, new_item)
                     # 2) Persist the change
                     save_json(MENU_FILE, menu_data)
                     st.success(f"Added {item_name} to {item_category}!")
@@ -652,5 +653,6 @@ if __name__ == "__main__":
     if 'cart' not in st.session_state:
         st.session_state['cart'] = []
     main()
+
 
 
