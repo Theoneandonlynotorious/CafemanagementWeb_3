@@ -177,51 +177,53 @@ def menu_management_page():
                     if item.get('description'):
                         st.write(f"{item['description']}")
     with tab2:
-        st.subheader("Add New Item")
-        with st.form("add_item_form"):
-            item_type = st.selectbox("Item Type", ["beverages", "food"])
-            item_name = st.text_input("Item Name")
-            item_price = st.number_input("Price (₹)", min_value=0.01, step=0.01)
-            item_category = st.text_input("Category")
-            item_description = st.text_area("Description")
-            item_inventory = st.number_input("Inventory Quantity", min_value=0, step=1)
-            item_available = st.checkbox("Available", value=True)
+    st.subheader("Add New Item")
+    with st.form("add_item_form"):
+        item_type = st.selectbox("Item Type", ["beverages", "food"])
+        item_name = st.text_input("Item Name")
+        item_price = st.number_input("Price (₹)", min_value=0.01, step=0.01)
+        item_category = st.text_input("Category")
+        item_description = st.text_area("Description")
+        item_inventory = st.number_input("Inventory Quantity", min_value=0, step=1)
+        item_available = st.checkbox("Available", value=True)
 
-            submitted = st.form_submit_button("Add Item")
-            if submitted:
-                if item_name and item_price and item_category:
-                    prefix = "BEV" if item_type == "beverages" else "FOOD"
-                    existing = menu_data.get(item_type, [])
-                    max_id = 0
-                    for itm in existing:
-                        try:
-                            num = int(itm["id"].replace(prefix, ""))
-                            max_id = max(max_id, num)
-                        except ValueError:
-                            continue
-                    new_id = f"{prefix}{max_id + 1:03d}"
+        submitted = st.form_submit_button("Add Item")
+        if submitted:
+            if item_name and item_price and item_category:
+                prefix = "BEV" if item_type == "beverages" else "FOOD"
+                existing = menu_data.get(item_type, [])
+                max_id = 0
+                for itm in existing:
+                    try:
+                        num = int(itm["id"].replace(prefix, ""))
+                        max_id = max(max_id, num)
+                    except:
+                        continue
+                new_id = f"{prefix}{max_id + 1:03d}"
 
-                    new_item = {
-                        "id": new_id,
-                        "name": item_name,
-                        "price": float(item_price),
-                        "category": item_category,
-                        "available": item_available,
-                        "description": item_description,
-                        "inventory": int(item_inventory)
-                    }
+                new_item = {
+                    "id": new_id,
+                    "name": item_name,
+                    "price": float(item_price),
+                    "category": item_category,
+                    "available": item_available,
+                    "description": item_description,
+                    "inventory": int(item_inventory)
+                }
 
-                    # 1) Insert new item *after* the last default item of its category
-                    default_count = len([i for i in existing if i.get("_type") == item_type])
-                   first_custom = next((i for i, itm in enumerate(menu_data[item_type])
-                     if not itm["id"].startswith(prefix)), len(menu_data[item_type]))
-menu_data[item_type].insert(first_custom, new_item)
-                    # 2) Persist the change
-                    save_json(MENU_FILE, menu_data)
-                    st.success(f"Added {item_name} to {item_category}!")
-                    st.rerun()
-                else:
-                    st.error("Please fill all fields.")
+                # place new item right after the last default item of this category
+                first_custom = next(
+                    (i for i, itm in enumerate(existing)
+                     if not itm["id"].startswith(prefix)),
+                    len(existing)
+                )
+                existing.insert(first_custom, new_item)
+
+                save_json(MENU_FILE, menu_data)
+                st.success(f"Added {item_name} to menu!")
+                st.rerun()
+            else:
+                st.error("Please fill all fields.")
     with tab3:
         st.subheader("Edit Menu Items")
         all_items = []
