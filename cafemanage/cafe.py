@@ -218,6 +218,7 @@ def menu_management_page():
                         menu_data[item_type] = []
                     menu_data[item_type].append(new_item)
                     save_json(MENU_FILE, menu_data)
+                    menu_data.setdefault(item_category, []).append(new_item)
                     st.success(f"Added {item_name} to menu!")
                     #st.experimental_rerun()
                 else:
@@ -654,3 +655,4 @@ if __name__ == "__main__":
     if 'cart' not in st.session_state:
         st.session_state['cart'] = []
     main()
+
