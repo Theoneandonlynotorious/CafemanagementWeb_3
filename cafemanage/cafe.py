@@ -790,5 +790,6 @@ def main():
     elif choice == "Settings":
         settings_page() if user["role"] == "admin" else st.warning("Admin only")
 
-if _name_ == "_main_":
+if __name__ == "__main__":
     main()
+
