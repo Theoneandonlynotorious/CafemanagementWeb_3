@@ -791,5 +791,9 @@ def main():
         settings_page() if user["role"] == "admin" else st.warning("Admin only")
 
 if __name__ == "__main__":
-    main()
+    if 'cart' not in st.session_state: 
+        st.session_state['cart'] = []
+    main()
+ 
+
 
