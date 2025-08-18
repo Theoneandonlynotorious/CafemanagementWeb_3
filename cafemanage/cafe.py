@@ -7,190 +7,130 @@ import streamlit as st
 import qrcode
 from bill_mail import build_pdf, send_email
 
-# ---------- GLOBAL COFFEE-THEME ----------
-st.set_page_config(page_title="Café Management System", page_icon="☕", layout="wide")
-
+# ---------- Global Coffee-Brown Theme (single consolidated block) ----------
 st.markdown(
     """
     <style>
-    /* Page background & default text */
-    .main {background-color: #fdf6f0; color: #3e2723;}
-
-    /* Sidebar */
-    .css-1d391kg {background-color: #efebe9 !important;}
-
-    /* All Buttons */
-    .stButton > button {
-        background-color: #8d6e63;
-        color: #ffffff;
-        border-radius: 8px;
-        border: none;
-        font-weight: 600;
-        transition: background-color 0.2s;
-    }
-    .stButton > button:hover {background-color: #6d4c41;}
-
-    /* All Select Boxes, Number Inputs, Text Inputs, Multiselect, Date Inputs */
-    .stSelectbox > div > div > div,
-    .stMultiSelect > div > div > div,
-    .stTextInput > div > div > input,
-    .stNumberInput > div > div > input,
-    .stDateInput > div > div > input,
-    .stTextArea > div > div > textarea {
-        background-color: #fff8e1;
-        border: 1px solid #a1887f;
-        border-radius: 6px;
+    /* ---------- App background ---------- */
+    .stApp {
+        background: linear-gradient(135deg, #fdf6f0 0%, #efebe9 100%);
         color: #3e2723;
     }
 
-    /* Checkbox color */
-    .stCheckbox > div > div > div {
-        accent-color: #8d6e63;
-    }
-
-    /* Radio color */
-    .stRadio > div > div > div {
-        accent-color: #8d6e63;
-    }
-
-    /* Metric cards */
-    div[data-testid="metric-container"] {
-        background-color: #efebe9;
-        border-left: 5px solid #8d6e63;
-        padding: 0.5rem;
-    }
-
-    /* Sidebar headings */
-    .css-1d391kg h1, .css-1d391kg h2, .css-1d391kg h3 {
-        color: #5d4037;
-    }
-
-    /* Expander headers */
-    .streamlit-expanderHeader {
-        background-color: #efebe9;
-        color: #5d4037;
-        border-radius: 6px;
-    }
-
-    /* Tabs */
-    .stTabs [data-baseweb="tab-list"] button {
-        background-color: #efebe9;
-        color: #5d4037;
-        border-radius: 6px 6px 0 0;
-        border-bottom: 2px solid #8d6e63;
-    }
-    .stTabs [data-baseweb="tab-list"] button[aria-selected="true"] {
-        background-color: #8d6e63;
-        color: #ffffff;
-    }
-
-    /* Login hero background */
-    .login-hero {
-        background-image: url("https://images.unsplash.com/photo-1511920170033-f8396924c3cb?auto=format&fit=crop&w=1350&q=80");
-        background-size: cover;
-        background-position: center;
-        padding: 100px 0;
-        border-radius: 15px;
-        text-align: center;
-        color: white;
-        margin-bottom: 2rem;
-    }
-    </style>
-    """,
-    unsafe_allow_html=True,
-)
-# ---------- Café-Brown Global Skin ----------
-st.markdown(
-    """
-    <style>
-    /* Page background */
-    .stApp {
-        background: linear-gradient(135deg, #fdf6f0 0%, #efebe9 100%);
-    }
-
-    /* Header / Sidebar titles */
+    /* ---------- Headings ---------- */
     h1, h2, h3, h4, .stSidebar h1, .stSidebar h2 {
         color: #5d4037 !important;
     }
 
-    /* Buttons everywhere */
-    .stButton > button {
-        background: linear-gradient(135deg, #8d6e63, #6d4c41);
-        color: #ffffff;
-        border: none;
-        border-radius: 8px;
-        padding: 0.5em 1.2em;
-        font-weight: 600;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-        transition: all 0.2s;
+    /* ---------- Sidebar ---------- */
+    .css-1d391kg, section[data-testid="stSidebar"] {
+        background-color: #efebe9 !important;
     }
-    .stButton > button:hover {
-        background: linear-gradient(135deg, #6d4c41, #5d4037);
-        transform: translateY(-1px);
+    .css-1d391kg h1, .css-1d391kg h2, .css-1d391kg h3 {
+        color: #5d4037 !important;
     }
 
-    /* Inputs, Select Boxes, Date Picker, Text Area, Checkboxes, Radio */
+    /* ---------- Buttons (all) ---------- */
+    .stButton > button,
+    .stFormSubmitButton > button,
+    div[data-testid="stFormSubmitButton"] button,
+    div[data-testid="stButton"] button {
+        background: linear-gradient(135deg, #8d6e63, #6d4c41) !important;
+        color: #ffffff !important;
+        border: none !important;
+        border-radius: 8px !important;
+        padding: 0.5em 1.2em !important;
+        font-weight: 600 !important;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.2) !important;
+        transition: all 0.2s !important;
+    }
+    .stButton > button:hover,
+    .stFormSubmitButton > button:hover {
+        background: linear-gradient(135deg, #6d4c41, #5d4037) !important;
+        transform: translateY(-1px) !important;
+    }
+
+    /* ---------- Inputs ---------- */
     .stTextInput > div > div > input,
     .stNumberInput > div > div > input,
     .stSelectbox > div > div > div,
     .stMultiSelect > div > div > div,
     .stDateInput > div > div > input,
-    .stTextArea > div > div > textarea,
-    .stCheckbox input,
-    .stRadio input {
+    .stTextArea > div > div > textarea {
         background-color: #fff8e1 !important;
         border: 1px solid #a1887f !important;
-        border-radius: 6px;
-        color: #3e2723;
+        border-radius: 6px !important;
+        color: #3e2723 !important;
+    }
+    input[type="number"] {
+        background-color: #fff8e1 !important;
+        border: 1px solid #8d6e63 !important;
+        border-radius: 6px !important;
+        color: #3e2723 !important;
+        padding: 0.35em 0.5em !important;
     }
 
-    /* Sidebar */
-    .css-1d391kg {
-        background: #efebe9 !important;
+    /* ---------- Checkbox & Radio ---------- */
+    .stCheckbox input, .stRadio input {
+        accent-color: #8d6e63 !important;
     }
 
-    /* Metric cards */
+    /* ---------- Metrics ---------- */
     div[data-testid="metric-container"] {
         background: #fff8e1;
         border-left: 5px solid #8d6e63;
         border-radius: 8px;
         box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        padding: 0.5rem;
     }
 
-    /* Tabs */
+    /* ---------- Tabs ---------- */
     .stTabs [data-baseweb="tab-list"] button {
         background: #efebe9;
         color: #5d4037;
         border-radius: 6px 6px 0 0;
+        border-bottom: 2px solid #8d6e63;
         margin-right: 4px;
     }
     .stTabs [data-baseweb="tab-list"] button[aria-selected="true"] {
         background: #8d6e63;
         color: #ffffff;
     }
-
-    /* Expanders / Accordions */
-    .streamlit-expanderHeader {
-        background-color: #efebe9;
-        color: #5d4037;
-        border-radius: 6px;
-        border-left: 4px solid #8d6e63;
+    /* Make category titles bold & bigger */
+    .stTabs > div > div > div > div > div > div {
+        font-weight: 800 !important;
+        font-size: 1.1em !important;
+        color: #5d4037 !important;
     }
 
-    /* Tables & Dataframes */
+    /* ---------- Expanders ---------- */
+    .streamlit-expanderHeader {
+        background-color: #efebe9 !important;
+        color: #5d4037 !important;
+        border-radius: 6px !important;
+        border-left: 4px solid #8d6e63 !important;
+    }
+
+    /* ---------- Tables/Dataframes ---------- */
     .dataframe th {
         background-color: #8d6e63 !important;
-        color: #ffffff;
+        color: #ffffff !important;
     }
     .dataframe td {
-        background-color: #fff8e1;
-        color: #3e2723;
+        background-color: #fff8e1 !important;
+        color: #3e2723 !important;
     }
 
-    /* Login hero background */
+    /* ---------- Small dropdown text tweak (status filter) ---------- */
+    div[data-baseweb="select"] span {
+        font-size: 0.70em !important;
+    }
+
+    /* ---------- Login hero with background image ---------- */
+    /* Local dev: use "assets/login_hero.jpg"
+       Streamlit Cloud: use "/app/assets/login_hero.jpg" */
     .login-hero {
-    background-image: url("https://images.unsplash.com/photo-1511920170033-f8396924c3cb?auto=format&fit=crop&w=1350&q=80");
-}
+        background-image: url("assets/login_hero.jpg");
         background-size: cover;
         background-position: center;
         padding: 100px 0;
@@ -203,6 +143,7 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
+
 # 🔥 Force-style ALL remaining buttons
 st.markdown(
     """
@@ -794,3 +735,4 @@ if __name__ == "__main__":
     if 'cart' not in st.session_state: 
         st.session_state['cart']=[]
     main()
+
