@@ -16,7 +16,7 @@ from reportlab.pdfbase.ttfonts import TTFont
 SMTP_SERVER   = "smtp.gmail.com"
 SMTP_PORT     = 587
 SMTP_USERNAME = "mycafe480@gmail.com"
-SMTP_PASSWORD = "vufa rafh vzlz bgqv"
+SMTP_PASSWORD = "anxa micp fmwr dmuf"
 FROM_EMAIL    = SMTP_USERNAME
 
 # ---------------------------------------------------------
@@ -130,4 +130,5 @@ def send_email(to_email: str, order_dict: dict, pdf_bytes: bytes):
         srv.starttls()
         srv.login(SMTP_USERNAME, SMTP_PASSWORD)
         srv.sendmail(FROM_EMAIL, to_email.strip(), msg.as_string())
+
 
