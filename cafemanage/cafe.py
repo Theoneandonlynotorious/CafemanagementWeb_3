@@ -303,7 +303,7 @@ def authenticate(username, password):
 
 # ---------- Login ----------
 def login_page():
-    st.markdown('<div class="login-hero"><h1>☕ Café Management System</h1></div>', unsafe_allow_html=True)
+    st.markdown('<div class="login-hero"><h1>☕ Smart Café Management System</h1></div>', unsafe_allow_html=True)
     username = st.text_input("Username")
     password = st.text_input("Password", type="password")
     if st.button("Login"):
@@ -535,7 +535,7 @@ def order_management_page():
             st.write(f"Tax: ₹{tax_amt:.2f}")
             st.write(f"Service Charge: ₹{svc_amt:.2f}")
             st.write(f"Total: ₹{final_total:.2f}")
-            payment_status = st.selectbox("Payment Status", ["Unpaid", "Paid", "Partial"])
+            payment_status = st.selectbox("Payment Status", ["Online", "Cash", "Partial"])
             if st.button("Place Order"):
                 if not customer_name:
                     st.error("Enter customer name")
@@ -735,4 +735,5 @@ if __name__ == "__main__":
     if 'cart' not in st.session_state: 
         st.session_state['cart']=[]
     main()
+
 
