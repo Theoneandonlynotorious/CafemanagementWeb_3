@@ -4,7 +4,6 @@
 import json, os, io
 from datetime import datetime, date
 import streamlit as st
-import qrcode
 from bill_mail import build_pdf, send_email
 
 # ---------- GLOBAL COFFEE-THEME ----------
@@ -721,7 +720,7 @@ def settings_page():
     settings = load_json(SETTINGS_FILE) or {}
     with st.form("settings_form"):
         cafe_name = st.text_input("Café Name", value=settings.get('cafe_name', 'My Café'))
-        barcode_url = st.text_input("Menu URL for QR Code", value=settings.get('barcode_url', 'https://mycafe.com/menu'))
+        #barcode_url = st.text_input("Menu URL for QR Code", value=settings.get('barcode_url', 'https://mycafe.com/menu'))
         tax_rate = st.number_input("Tax Rate (%)", min_value=0.0, max_value=100.0, value=settings.get('tax_rate', 0.10) * 100, step=0.1)
         service_charge = st.number_input("Service Charge (%)", min_value=0.0, max_value=100.0, value=settings.get('service_charge', 0.05) * 100, step=0.1)
         if st.form_submit_button("Save Settings"):
@@ -792,3 +791,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
